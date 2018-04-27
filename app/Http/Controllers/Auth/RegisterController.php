@@ -81,9 +81,11 @@ class RegisterController extends Controller
             'gender' => $data['gender'],
         ]);
 
-        var_dump('Hurry! user account added to databases with its profile
-        details. Please check database table.');
+        // ======= Temporarily ========= //
+        $authentication->userProfile()->save($profile);
+        var_dump('Hurry! user account created with profile details. Please check database table.');
         die();
+        // ============================== //
 
         //return $authentication->userProfile()->save($profile);
     }
