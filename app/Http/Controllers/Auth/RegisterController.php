@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
+use App\UserAuthentication;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -48,8 +48,10 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'first_name' => 'required|string|max:255',
+            'middle_name' => 'string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:user_authentications',
             'password' => 'required|string|min:6|confirmed',
         ]);
     }
@@ -58,14 +60,31 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return \App\User
+     * @return \App\UserAuthentication
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
+        $authentication = UserAuthentication::create([
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'active' => 1,
+            'action' => 2,
         ]);
+
+        // User id will be mapped automatically
+        $profile = new \App\UserProfile([
+            'first_name' => $data['first_name'],
+            'middle_name' => $data['middle_name'],
+            'last_name' => $data['last_name'],
+            'dob' => $data['dob'],
+            'economy' => $data['economy'],
+            'gender' => $data['gender'],
+        ]);
+
+        var_dump('Hurry! user account added to databases with its profile
+        details. Please check database table.');
+        die();
+
+        //return $authentication->userProfile()->save($profile);
     }
 }
